@@ -1,0 +1,33 @@
+FROM continuumio/miniconda:latest
+
+# we need to add the intel channel - this cannot be done in the requirements.txt at this time
+RUN conda update conda --yes --quiet \
+ && conda config --add channels intel
+ 
+COPY py_libs/requirements.txt /
+# https://stackoverflow.com/questions/35802939/install-only-available-packages-using-conda-install-yes-file-requirements-t
+RUN while read requirement; do conda install --yes --quiet $requirement || pip install $requirement; done < /requirements.txt
+
+# Now that we have all requirements for py_libs, install jupyter
+RUN conda install jupyter --y --q
+
+# and extensions with default options
+# nbextensions (e.g. for table of contents)
+RUN conda install -c conda-forge jupyter_contrib_nbextensions --y --q
+# enable table of contents
+RUN jupyter nbextension enable toc2/main
+# hide input cells button
+RUN jupyter nbextension enable hide_input/main
+
+COPY dockerfiles/display-info.sh /
+RUN chmod +x /display-info.sh \
+  && /display-info.sh
+
+ENV JUPYTER_PORT 8888
+ENV PYTHONPATH "/usr/src/app/py_libs"
+
+WORKDIR /usr/src/app
+VOLUME /usr/src/app
+EXPOSE ${JUPYTER_PORT}
+
+CMD ["/opt/conda/bin/jupyter", "notebook", "--notebook-dir=/usr/src/app", "--ip='*'", "--port=8888", "--no-browser", "--allow-root"]

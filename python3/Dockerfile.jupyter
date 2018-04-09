@@ -1,0 +1,25 @@
+FROM continuumio/miniconda3:latest
+
+RUN conda update conda --yes --quiet
+
+# Using Intel Conda* Packages with Continuum's Python*
+RUN conda install jupyter --y --q \
+ && conda install mkl -y -q -c intel --no-update-deps \
+ && conda install numpy -y -q -c intel --no-update-deps
+
+ # Some external stuff
+ COPY requirements.txt /
+ RUN while read requirement; do conda install --yes --quiet $requirement || pip3 install $requirement; done < /requirements.txt
+
+ RUN conda info \
+  && python --version \
+  && conda list \
+  && pip list --format=columns
+
+ENV PYTHONPATH "/usr/src/app/:${PYTHONPATH}"
+
+WORKDIR /usr/src/app
+VOLUME /usr/src/app
+EXPOSE 8888
+
+CMD ["/opt/conda/bin/jupyter", "notebook", "--notebook-dir=/usr/src/app", "--ip='*'", "--port=8888", "--no-browser", "--allow-root"]
