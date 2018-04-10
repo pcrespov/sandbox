@@ -1,9 +1,12 @@
 FROM continuumio/miniconda:latest
 
+LABEL maintainer="pcrespov" \
+      description="jupyter notebook for python 2"
+
 # we need to add the intel channel - this cannot be done in the requirements.txt at this time
 RUN conda update conda --yes --quiet \
  && conda config --add channels intel
- 
+
 COPY py_libs/requirements.txt /
 # https://stackoverflow.com/questions/35802939/install-only-available-packages-using-conda-install-yes-file-requirements-t
 RUN while read requirement; do conda install --yes --quiet $requirement || pip install $requirement; done < /requirements.txt

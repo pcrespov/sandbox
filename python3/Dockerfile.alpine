@@ -1,5 +1,8 @@
 FROM python:3.6.3-alpine3.6
 
+LABEL maintainer="pcrespov" \
+      description="lightweight python 3"
+
 RUN pip3 install --upgrade pip setuptools && \
     if [ ! -e /usr/bin/pip ]; then ln -s pip3 /usr/bin/pip ; fi && \
     if [[ ! -e /usr/bin/python ]]; then ln -sf /usr/bin/python3 /usr/bin/python; fi && \
@@ -19,6 +22,4 @@ RUN python --version && \
 WORKDIR /usr/src/app
 VOLUME /usr/src/app
 
-CMD ["python"]
-
-# TODO mULTISTAGE with only python intallation!
+ENTRYPOINT ["python"]

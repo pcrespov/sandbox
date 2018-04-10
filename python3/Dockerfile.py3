@@ -1,5 +1,8 @@
 FROM python:3
 
+LABEL maintainer="pcrespov" \
+      description="python 3"
+
 COPY requirements.txt /
 RUN pip3 install --no-cache-dir -r requirements.txt
 
@@ -9,4 +12,4 @@ RUN python --version \
 WORKDIR /usr/src/app
 VOLUME /usr/src/app
 
-CMD ["python"]
+ENTRYPOINT [ "python" ]
