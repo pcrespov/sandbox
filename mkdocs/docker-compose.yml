@@ -1,7 +1,7 @@
 version: '3'
 services:
   mkdocs:
-    image: pcrespov/mkdocs:latest
+    image: itisfoundation/mkdocs:latest
     build:
       context: .
       dockerfile: Dockerfile
