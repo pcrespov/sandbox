@@ -1,4 +1,5 @@
 #/bin/sh
+
 conda info
 python --version
 conda list
