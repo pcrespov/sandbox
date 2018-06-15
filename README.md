@@ -1,6 +1,7 @@
 # dockerfiles
 
-My curated collection of dockerfiles
+My curated collection of dockerfiles and some useful samples and tips on how
+to use dockers
 
 ## Good Practices
 
