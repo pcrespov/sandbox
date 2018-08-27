@@ -7,7 +7,9 @@ to use dockers
 
 - If a service can run without privileges, use ``USER`` to change to a non-root user [[1]]. All our non-root users will be named ``scu``.
 
-- To communicate with the docker daemon, the container's user need access to socket ``/var/run/docker.sock``. The latter is in the host's ``docker`` group so we must guarantee that a) the same group (and id) exists inside the container and b) container's user includes this group.
+- To communicate with the docker daemon, the container's user need access to socket ``/var/run/docker.sock``. The latter is in the host's ``docker`` group so we must guarantee that:
+  -  a) the same group (and id) exists inside the container and 
+  -  b) container's user includes this group.
 
 ```bash
   # should be in docker-group
