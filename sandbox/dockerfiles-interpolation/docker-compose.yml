@@ -1,0 +1,7 @@
+version: '3.4'
+services:
+  test:
+    build:
+      context: .
+      args:
+        - host_gid_=$HOST_GID
