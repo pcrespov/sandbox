@@ -2,10 +2,10 @@
 
 How to communicate with a docker daemon from a container running with a non-root user
 
-## Problem 1: client calls from python
+## Problem: client calls using docker-sdk
 
 - install python-based [docker-sdk] in a virtualenv inside of the docker
-- run a simple script that ``docker ps``s
+- run a simple script that does something like ``docker ps``
 - container runs with ``scu`` user (non-root)
 
 #### Trials

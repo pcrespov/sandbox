@@ -12,9 +12,17 @@ _LOGGER = logging.getLogger(__name__)
 if __name__ == "__main__":
     client = docker.from_env()
 
-    # requests via socket docker images
+    # ``docker image ls``
     images = client.images.list(all=False)
-    _LOGGER.info("Images in host %d:\n\t-%s", len(images), "\n\t- ".join(map(str, images)) )
+    _LOGGER.info("Images in host %d:\n\t-%s", \
+        len(images), \
+        "\n\t- ".join(map(str, images)) )
+
+    # ``docker ps``
+    containers = client.containers.list()
+    _LOGGER.info("Containers running in host %d:\n\t-%s", \
+        len(containers), \
+        "\n\t- ".join(map(str, containers)) )
 
     # request to log into masu
     res = client.login(registry="masu.speag.com/v2", username="z43", password="z43")
