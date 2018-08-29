@@ -1,0 +1,10 @@
+version: '3.4'
+services:
+  test:
+    build:
+      context: .
+      args:
+        # Put here gid of host's docker
+        - DOCKER_GID_ARG=1001
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
