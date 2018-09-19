@@ -1,0 +1,12 @@
+version: '3.4'
+services:
+  demo_alpine:
+    build:
+      image: mapped-uid-docker:alpine
+      context: .
+      dockerfile: Dockerfile.alpine 
+    volumes:
+      - $TMP:/tim:ro
+      - .:/code
+    working_dir: /code
+    command: echo "did it work" > somefile
