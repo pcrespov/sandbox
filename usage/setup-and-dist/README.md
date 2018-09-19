@@ -5,6 +5,7 @@
 - [Installing packages tutorial](https://packaging.python.org/tutorials/installing-packages/)
 - [setuptools](https://setuptools.readthedocs.io/en/latest/)
 - [Lies, More lies and python packaging documentation on package-data](http://blog.codekills.net/2011/07/15/lies,-more-lies-and-python-packaging-documentation-on--package_data-/) - not sure this critic is up-to-date
+- [Python Packaging User Guides](https://packaging.python.org/guides/)
 
 ### Problem1: sample_package 
 
@@ -24,3 +25,6 @@ resource_stream(sample_package.resources,config/ci.yml) = <_io.BufferedReader na
 resource_isdir(sample_package.resources,config/ci.yml) = False
 resource_filename(sample_package.resources,config/ci.yml) = /home/crespo/devp/dockerfiles/.venv/lib/python3.6/site-packages/sample_package/config/ci.yml
 ```
+
+
+

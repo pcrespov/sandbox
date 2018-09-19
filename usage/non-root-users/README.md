@@ -26,6 +26,15 @@ But:
 
 ---
 
+## Start as root and run as non-root
+
+These articles use an entrypoint script to set permissions as root and ``su-exec`` as non-root
+
+- [mapped-uid-docker](https://github.com/Graham42/mapped-uid-docker)
+- [su-exec](https://stackoverflow.com/questions/39397548/how-to-give-non-root-user-in-docker-container-access-to-a-volume-mounted-on-the) 
+
+---
+
 ## Python venv w/ non-root users
 
 One argument *not to use* python virtual environments (venv) inside a container is that the latter already provides the desired [isolation](https://stackoverflow.com/questions/48561981/activate-python-virtualenv-in-dockerfile).
@@ -39,6 +48,7 @@ Consider using the `--user` option or check the permissions.
 You are using pip version 10.0.1, however version 18.0 is available.
 You should consider upgrading via the 'pip install --upgrade pip' command.
 ```
+
 
 
 
