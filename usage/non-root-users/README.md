@@ -2,7 +2,7 @@
 
 In [[1]] we find a good synthesis of how uids work between containers and hosts. Some important points:
 
-- The linux kernel manages the uid/gid and kenrel-level syscalls are used to determine access privileges
+- The linux kernel manages the uid/gid and kernel-level syscalls are used to determine access privileges
 - Both the host and containers run on the same kernel, therefore the entire world of uid/gids are controlled by a single kernel [[1]].
 - Names associated to uid/gid are provided by separate non-kernel tools on host/container. Nonetheless, the mapping is done at the uid/gid level.
 - It is therefore convenient to restrict access of container's user into the host system [[2]].

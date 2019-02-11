@@ -12,4 +12,4 @@ deluser tim > /dev/null 2>&1
 addgroup -g $GROUPID tim
 adduser -u $USERID -G tim -D -s /bin/sh tim
 
-gosu tim "$@"
+#gosu tim "$@"
