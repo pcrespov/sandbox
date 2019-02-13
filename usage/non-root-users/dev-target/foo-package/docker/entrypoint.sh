@@ -14,4 +14,33 @@ echo "  User    :`id $(whoami)`"
 echo "  Workdir :`pwd`"
 
 
+
+if [[ ${MY_BUILD_TARGET} == "development" ]]
+then
+    MOUNT=/home/scu/foo-package
+    #MOUNT=/wrong
+
+    stat $MOUNT &> /dev/null || \
+        (echo "ERROR: You must mount '$MOUNT' to deduce user and group ids" && exit 1) # FIXME: exit does not stop script
+
+    USERID=$(stat -c %u $MOUNT)
+    GROUPID=$(stat -c %g $MOUNT)
+
+    addgroup -g $GROUPID hgrp
+    addgroup scu hgrp
+fi
+
+
+# Appends docker group if socket is mounted
+DOCKER_MOUNT=/var/run/docker.sock
+stat $DOCKER_MOUNT &> /dev/null
+if [[ $? -eq 0 ]]
+then 
+    GROUPID=$(stat -c %g $DOCKER_MOUNT)
+
+    addgroup -g $GROUPID docker
+    addgroup scu docker
+fi
+
+echo "Starting boot ..."
 su-exec scu "$@"

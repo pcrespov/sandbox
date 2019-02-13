@@ -18,9 +18,9 @@ WORKDIR /home/scu
 
 # copies from build-context to workdir/
 # Should copy ONLY stuff that is needed to build the image
-COPY --chown=scu:scu \
-      foo-package/docker \
-      foo-package/docker
+#COPY --chown=scu:scu \
+#      foo-package/docker \
+#      foo-package/docker
 
 #RUN ls -la foo-package && echo "asdf"
 
