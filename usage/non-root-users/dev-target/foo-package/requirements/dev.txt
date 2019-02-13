@@ -1,0 +1,4 @@
+-r base.txt
+-r test.txt
+# some dev tools in a different environ ???
+# can I distinguish if in docker or outside?

@@ -1,0 +1,17 @@
+# https://docs.docker.com/engine/reference/builder/#dockerignore-file
+#
+#  -> NEEDS TO BE at the same directory as the build-context
+#
+#
+# -> CAREFUL!! This runs first before build and it is easy to forget that
+#              some of the sources in COPY might be invalid in Dockerfile!
+
+#**/*.py
+#**/Dockerfile
+
+*
+
+# Ignore all except ...
+!**/requirements
+!**/src
+!**/*.py

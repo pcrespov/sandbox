@@ -1,0 +1,94 @@
+FROM python:3.6-alpine as base
+
+LABEL maintainer=pcrespov
+
+# uid=8004(scu) gid=8004(scu) groups=8004(scu)
+RUN adduser -D -u 8004 -s /bin/sh scu
+
+RUN apk add --no-cache \
+      su-exec
+
+# The idea is to mount build context onto $HOME
+ENV HOME /home/scu
+ENV PIP  /home/scu/.venv/bin/pip3
+
+EXPOSE 8080
+
+WORKDIR /home/scu
+COPY --chown=scu:scu foo-package/docker/healthcheck.py docker/healthcheck.py
+HEALTHCHECK --interval=30s \
+            --timeout=30s \
+            --start-period=1s \
+            --retries=3 \
+            CMD [ "python3", "$HOME/docker/healthcheck.py", "http://localhost:8080/v0/" ]
+
+
+# -------------------------- Build stage -------------------
+FROM base as build
+
+RUN apk add --no-cache \
+      libc-dev
+
+RUN python3 -m venv $HOME/.venv &&\
+    $PIP install --upgrade \
+      pip \
+      wheel \
+      setuptools
+
+
+# install base 3rd party packages to accelerate runtime installs
+#
+COPY --chown=scu:scu requirements/base.txt requirements/base.txt
+RUN $PIP install -r requirements/base.txt
+
+
+
+# --------------------------Cache stage -------------------
+# CI in master buils & pushes this target to speed-up image build
+#
+FROM build as cache
+ENV MY_BUILD_TARGET cache
+
+# server
+COPY --chown=scu:scu foo $HOME/foo-package
+
+WORKDIR /home/scu/foo-package
+RUN $PIP install . &&\
+    $PIP list
+
+
+
+# --------------------------Production stage -------------------
+# Final cleanup up to reduce image size and startup setup
+#
+FROM cache as production
+
+WORKDIR /home/scu
+
+RUN rm -rf $HOME/foo-package/src &&\
+    rm -rf /tmp/.pipcache
+
+ENV MY_BUILD_TARGET production
+ENV MY_BUILD_MODE production
+ENTRYPOINT [ "/bin/sh", "docker/entrypoint.sh" ]
+CMD docker/boot.sh
+
+
+
+# --------------------------Development stage -------------------
+# Source code accessible in host but runs in container
+#
+FROM build as development
+
+WORKDIR /home/scu
+
+# install test 3rd party packages to accelerate runtime installs
+COPY --chown=scu:scu foo-package/requirements/test.txt requirements/tests.txt
+RUN $PIP install -r requirements-tests.txt
+
+VOLUME /home/scu/foo-package
+
+ENV MY_BUILD_TARGET development
+ENV MY_BUILD_MODE development
+ENTRYPOINT [ "/bin/sh", "docker/entrypoint.sh" ]
+CMD docker/boot.sh
