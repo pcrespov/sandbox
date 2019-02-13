@@ -6,12 +6,11 @@
 # -> CAREFUL!! This runs first before build and it is easy to forget that
 #              some of the sources in COPY might be invalid in Dockerfile!
 
-#**/*.py
-#**/Dockerfile
-
 *
-
 # Ignore all except ...
+!foo-package/
+!**/docker
 !**/requirements
 !**/src
 !**/*.py
+!**/Makefile

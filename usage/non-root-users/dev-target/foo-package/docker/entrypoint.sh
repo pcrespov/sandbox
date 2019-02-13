@@ -9,10 +9,9 @@
 #
 # See https://stackoverflow.com/questions/39397548/how-to-give-non-root-user-in-docker-container-access-to-a-volume-mounted-on-the
 
-echo "Entrypoint for target ${MY_BUILD_TARGET} ..."
+echo "Entrypoint for stage ${MY_BUILD_TARGET} ..."
 echo "  User    :`id $(whoami)`"
 echo "  Workdir :`pwd`"
-
 
 
 if [[ ${MY_BUILD_TARGET} == "development" ]]

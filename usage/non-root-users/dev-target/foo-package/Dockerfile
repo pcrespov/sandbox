@@ -9,7 +9,7 @@ RUN apk add --no-cache \
 
 # The idea is to mount build-context onto $HOME
 ENV HOME /home/scu
-ENV PIP  /home/scu/.venv/bin/pip3 --no-cache
+ENV MY_PIP  /home/scu/.venv/bin/pip3 --no-cache
 ENV MY_BUILD_TARGET base
 
 EXPOSE 8080
@@ -34,7 +34,7 @@ RUN apk add --no-cache \
       libc-dev
 
 RUN python3 -m venv $HOME/.venv &&\
-    $PIP install --upgrade \
+    $MY_PIP install --upgrade \
       pip \
       wheel \
       setuptools
@@ -46,10 +46,42 @@ COPY --chown=scu:scu \
       foo-package/requirements/*.txt \
       foo-package/requirements/
 
-RUN $PIP install -r foo-package/requirements/base.txt &&\
+RUN $MY_PIP install -r foo-package/requirements/base.txt &&\
     ls -la foo-package
 
 
+# --------------------------Cache stage -------------------
+# CI in master buils & pushes this target to speed-up image build
+#
+FROM build as cache
+ENV MY_BUILD_TARGET cache
+
+# copies it all
+COPY --chown=scu:scu \
+      foo-package \
+      $HOME/foo-package
+
+WORKDIR /home/scu/foo-package
+RUN $MY_PIP install . &&\
+    $MY_PIP list
+
+
+
+# --------------------------Production stage -------------------
+# Final cleanup up to reduce image size and startup setup
+#
+FROM cache as production
+
+WORKDIR /home/scu
+
+RUN rm -rf $HOME/foo-package/src &&\
+    rm -f $HOME/foo-package/**.py
+
+ENV MY_BUILD_TARGET production
+ENV MY_BOOT_MODE production
+
+ENTRYPOINT [ "/bin/sh", "foo-package/docker/entrypoint.sh" ]
+CMD [ "/bin/sh", "foo-package/docker/boot.sh"]
 
 
 # --------------------------Development stage -------------------
@@ -58,14 +90,14 @@ RUN $PIP install -r foo-package/requirements/base.txt &&\
 FROM build as development
 
 WORKDIR /home/scu/foo-package
-RUN $PIP install -r requirements/dev.txt
+RUN $MY_PIP install -r requirements/dev.txt
 
 
 WORKDIR /home/scu
 VOLUME /home/scu/foo-package
 
 ENV MY_BUILD_TARGET development
-ENV MY_BUILD_MODE development
+ENV MY_BOOT_MODE development
 
 ENTRYPOINT [ "/bin/sh", "foo-package/docker/entrypoint.sh" ]
 CMD [ "/bin/sh", "foo-package/docker/boot.sh"]
