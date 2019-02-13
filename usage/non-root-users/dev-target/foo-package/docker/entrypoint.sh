@@ -14,9 +14,10 @@ echo "  User    :`id $(whoami)`"
 echo "  Workdir :`pwd`"
 
 
-if [[ ${MY_BUILD_TARGET} == "development" ]]
+
+if [[ ${MY_BOOT_MODE} == "tooling" ]]
 then
-    MOUNT=/home/scu/foo-package
+    MOUNT=$HOME
     #MOUNT=/wrong
 
     stat $MOUNT &> /dev/null || \
@@ -25,8 +26,15 @@ then
     USERID=$(stat -c %u $MOUNT)
     GROUPID=$(stat -c %g $MOUNT)
 
-    addgroup -g $GROUPID hgrp
-    addgroup scu hgrp
+    # add host group to scu
+    #addgroup -g $GROUPID hgrp
+    #addgroup scu hgrp
+
+    # scu == host user and group 
+    deluser scu &> /dev/null
+    addgroup -g $GROUPID scu
+    adduser -u $USERID -G scu -D -s /bin/sh scu
+    #chown -R scu:scu $HOME # FIXME: THIS TAKES TOO LONG!!
 fi
 
 

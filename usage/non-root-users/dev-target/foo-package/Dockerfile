@@ -1,24 +1,26 @@
 FROM python:3.6-alpine as base
 LABEL maintainer=pcrespov
 
-# uid=8004(scu) gid=8004(scu) groups=8004(scu)
-RUN adduser -D -u 8004 -s /bin/sh scu
+# uid=8004(myu) gid=8004(myu) groups=8004(myu)
+RUN adduser -D -u 8004 -s /bin/sh -h /home/myu myu
 
 RUN apk add --no-cache \
       su-exec
 
 # The idea is to mount build-context onto $HOME
-ENV HOME /home/scu
-ENV MY_PIP  /home/scu/.venv/bin/pip3 --no-cache
+ENV HOME /home/myu
+
+# All MY_ variables are customized
+ENV MY_PIP  $HOME/.venv/bin/pip3 --no-cache-dir
 ENV MY_BUILD_TARGET base
 
 EXPOSE 8080
 
-WORKDIR /home/scu
+WORKDIR /home/myu
 
 # copies from build-context to workdir/
 # Should copy ONLY stuff that is needed to build the image
-#COPY --chown=scu:scu \
+#COPY --chown=myu:myu \
 #      foo-package/docker \
 #      foo-package/docker
 
@@ -42,7 +44,7 @@ RUN python3 -m venv $HOME/.venv &&\
 
 # install base 3rd party packages to accelerate runtime installs
 #
-COPY --chown=scu:scu \
+COPY --chown=myu:myu \
       foo-package/requirements/*.txt \
       foo-package/requirements/
 
@@ -57,11 +59,11 @@ FROM build as cache
 ENV MY_BUILD_TARGET cache
 
 # copies it all
-COPY --chown=scu:scu \
+COPY --chown=myu:myu \
       foo-package \
       $HOME/foo-package
 
-WORKDIR /home/scu/foo-package
+WORKDIR /home/myu/foo-package
 RUN $MY_PIP install . &&\
     $MY_PIP list
 
@@ -72,7 +74,7 @@ RUN $MY_PIP install . &&\
 #
 FROM cache as production
 
-WORKDIR /home/scu
+WORKDIR /home/myu
 
 RUN rm -rf $HOME/foo-package/src &&\
     rm -f $HOME/foo-package/**.py
@@ -89,12 +91,21 @@ CMD [ "/bin/sh", "foo-package/docker/boot.sh"]
 #
 FROM build as development
 
-WORKDIR /home/scu/foo-package
+ARG USERID=8004
+ARG GROUPID=8004
+
+# change uid and gid for myu user with that of host
+RUN apk --no-cache add shadow && \
+    usermod -u ${USERID} myu && \
+    groupmod -g ${GROUPID} myu
+
+WORKDIR /home/myu/foo-package
 RUN $MY_PIP install -r requirements/dev.txt
 
+RUN chown -R myu:myu $HOME/.venv
 
-WORKDIR /home/scu
-VOLUME /home/scu/foo-package
+WORKDIR /home/myu
+VOLUME /home/myu/foo-package
 
 ENV MY_BUILD_TARGET development
 ENV MY_BOOT_MODE development

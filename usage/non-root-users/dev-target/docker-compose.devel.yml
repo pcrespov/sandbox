@@ -4,6 +4,10 @@ services:
   foo:
     image: foo:dev
     build:
+      args:
+        - USERID=${USERID}
+        - GROUPID=${GROUPID}
+      # user: ${USER} # <<---- EXPLORE this
       target: development
     volumes:
       - ./foo-package:/home/scu/foo-package
