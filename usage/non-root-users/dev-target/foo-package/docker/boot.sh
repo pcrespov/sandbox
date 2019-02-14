@@ -2,7 +2,7 @@
 
 # Runs as SCU user ---------------------------------------------
 echo "Booting in ${MY_BOOT_MODE} mode ..."
-echo "Activating python virtual env..."
+# echo "Activating python virtual env..."
 # source $HOME/.venv/bin/activate
 
 echo "  User    :`id $(whoami)`"
@@ -24,7 +24,9 @@ then
     $MY_PIP list | sed 's/^/    /'
 fi
 
-python --version
-which python
-python -c "import foo; print(foo.__file__)"
+
+echo "  Python :" 
+python --version | sed 's/^/    /'
+which python | sed 's/^/    /'
+python -c "import foo; print(foo.__file__)" | sed 's/^/    /'
 
