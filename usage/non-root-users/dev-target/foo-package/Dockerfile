@@ -17,7 +17,7 @@ ENV MY_BUILD_TARGET base
 
 EXPOSE 8080
 
-WORKDIR /home/myu
+# WORKDIR /home/myu
 
 # copies from build-context to workdir/
 # Should copy ONLY stuff that is needed to build the image
@@ -43,8 +43,10 @@ RUN $MY_PIP install --upgrade \
       setuptools
 
 
+
+
 # install base 3rd party packages to accelerate runtime installs
-#
+WORKDIR /build
 COPY --chown=myu:myu \
       foo-package/requirements/*.txt \
       foo-package/requirements/
@@ -60,12 +62,13 @@ FROM build as cache
 ENV MY_BUILD_TARGET cache
 
 # copies it all
+WORKDIR /build
 COPY --chown=myu:myu \
       foo-package \
-      $HOME/foo-package
+      foo-package
 
-WORKDIR /home/myu/foo-package
-RUN $MY_PIP install . &&\
+# WORKDIR /build/foo-package
+RUN $MY_PIP install ./foo-package &&\
     $MY_PIP list
 
 
@@ -75,16 +78,17 @@ RUN $MY_PIP install . &&\
 #
 FROM cache as production
 
-WORKDIR /home/myu
-
-RUN rm -rf $HOME/foo-package/src &&\
-    rm -f $HOME/foo-package/**.py
-
 ENV MY_BUILD_TARGET production
 ENV MY_BOOT_MODE production
 
-ENTRYPOINT [ "/bin/sh", "foo-package/docker/entrypoint.sh" ]
-CMD [ "/bin/sh", "foo-package/docker/boot.sh"]
+WORKDIR /home/myu
+
+RUN mv /build/foo-package/docker docker &&\
+    chown myu:myu docker &&\
+    rm -rf /build
+
+ENTRYPOINT [ "/bin/sh", "docker/entrypoint.sh" ]
+CMD [ "/bin/sh", "docker/boot.sh"]
 
 
 # --------------------------Development stage -------------------

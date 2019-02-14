@@ -7,5 +7,8 @@ print('docker:', docker.__version__)
 
 cli = docker.from_env()
 print("ping?:", cli.ping())
-for image in cli.images.list():
-    print(image.short_id, image.tags)
+for i, image in enumerate(cli.images.list()):
+    if image.tags:
+        print(image.short_id, image.tags)
+        if i>10:
+            break
