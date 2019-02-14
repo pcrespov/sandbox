@@ -1,17 +1,7 @@
-# Using virtualenv or user's installation?
-
-TODO: doc
-
-See issue #1
-
-## Problem
-
-
-### Solution
+# Review [[1]]
 
 
 
-## References
 [[1]] Docker and Virtualenv? A clean way to locally install python dependencies with pip in Docker
 
 
