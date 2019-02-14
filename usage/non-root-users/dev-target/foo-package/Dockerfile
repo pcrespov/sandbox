@@ -47,7 +47,7 @@ RUN $MY_PIP install --upgrade \
 #
 COPY --chown=myu:myu \
       foo-package/requirements/*.txt \
-      foo-package/requirements  /
+      foo-package/requirements/
 
 RUN $MY_PIP install -r foo-package/requirements/base.txt &&\
     ls -la foo-package
