@@ -42,10 +42,17 @@ fi
 DOCKER_MOUNT=/var/run/docker.sock
 stat $DOCKER_MOUNT &> /dev/null
 if [[ $? -eq 0 ]]
-then 
+then d
     GROUPID=$(stat -c %g $DOCKER_MOUNT)
-    addgroup -g $GROUPID docker
-    addgroup myu docker
+    GROUPNAME=docker
+
+    addgroup -g $GROUPID $GROUPNAME
+    if [[ $? -gt 0 ]]
+    then
+        # if group already exists in container, then reuse name
+        GROUPNAME=$(getent group ${GROUPID} | cut -d: -f1)
+    fi
+    addgroup myu $GROUPNAME
 fi
 
 echo "Starting boot ..."
