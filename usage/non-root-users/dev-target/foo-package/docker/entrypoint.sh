@@ -44,10 +44,9 @@ stat $DOCKER_MOUNT &> /dev/null
 if [[ $? -eq 0 ]]
 then 
     GROUPID=$(stat -c %g $DOCKER_MOUNT)
-
     addgroup -g $GROUPID docker
-    addgroup scu docker
+    addgroup myu docker
 fi
 
 echo "Starting boot ..."
-su-exec scu "$@"
+su-exec myu "$@"

@@ -11,7 +11,8 @@ RUN apk add --no-cache \
 ENV HOME /home/myu
 
 # All MY_ variables are customized
-ENV MY_PIP  $HOME/.venv/bin/pip3 --no-cache-dir
+#ENV MY_PIP  $HOME/.venv/bin/pip3 --no-cache-dir
+ENV MY_PIP pip3 --no-cache-dir
 ENV MY_BUILD_TARGET base
 
 EXPOSE 8080
@@ -35,8 +36,8 @@ ENV MY_BUILD_TARGET build
 RUN apk add --no-cache \
       libc-dev
 
-RUN python3 -m venv $HOME/.venv &&\
-    $MY_PIP install --upgrade \
+#RUN python3 -m venv $HOME/.venv &&\
+RUN $MY_PIP install --upgrade \
       pip \
       wheel \
       setuptools

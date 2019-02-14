@@ -17,6 +17,9 @@ build: .env
 buildd: .env
 	docker-compose -f docker-compose.yml -f docker-compose.devel.yml build
 
+rebuild: .env
+	docker-compose -f docker-compose.yml build --no-cache
+
 .PHONY: run rund
 run:
 	docker-compose -f docker-compose.yml run --service-ports foo

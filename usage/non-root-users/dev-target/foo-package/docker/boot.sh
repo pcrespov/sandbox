@@ -3,7 +3,7 @@
 # Runs as SCU user ---------------------------------------------
 echo "Booting in ${MY_BOOT_MODE} mode ..."
 echo "Activating python virtual env..."
-source $HOME/.venv/bin/activate
+# source $HOME/.venv/bin/activate
 
 echo "  User    :`id $(whoami)`"
 echo "  Workdir :`pwd`"
@@ -21,7 +21,10 @@ then
     echo "  Environment :" 
     printenv  | sed 's/=/: /' | sed 's/^/    /' | sort
     echo "  PIP :" 
-    $MY_PIP list | sed 's/^/    /' |
+    $MY_PIP list | sed 's/^/    /'
 fi
 
+python --version
+which python
+python -c "import foo; print(foo.__file__)"
 
