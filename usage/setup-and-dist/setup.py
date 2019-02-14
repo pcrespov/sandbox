@@ -20,6 +20,6 @@ setup(
         },
     python_requires='>=3.6',
     install_requires=[
-        'pyyaml'
+        'pyyaml>4.2b1'
     ],
 )

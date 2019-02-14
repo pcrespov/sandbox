@@ -33,7 +33,7 @@ pyparsing=2.2.0=py27_intel_0
 python=2.7.14=intel_1
 python-dateutil=2.6.0=py27_intel_3
 pytz=2017.2=py27_intel_3
-pyyaml=3.12=py27_intel_3
+pyyaml>4.2b1
 scipy=0.19.1=np113py27_intel_23
 setuptools=27.2.0=py27_intel_0
 singledispatch=3.4.0.3=py27_intel_5
