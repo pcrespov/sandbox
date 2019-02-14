@@ -1,7 +1,7 @@
 FROM python:3.6-alpine as base
 LABEL maintainer=pcrespov
 
-# uid=8004(myu) gid=8004(myu) groups=8004(myu)
+# Production user: uid=8004(myu) gid=8004(myu) groups=8004(myu)
 RUN adduser -D -u 8004 -s /bin/sh -h /home/myu myu
 
 RUN apk add --no-cache \
@@ -47,8 +47,7 @@ RUN $MY_PIP install --upgrade \
 
 # install base 3rd party packages to accelerate runtime installs
 WORKDIR /build
-COPY --chown=myu:myu \
-      foo-package/requirements/*.txt \
+COPY  foo-package/requirements/*.txt \
       foo-package/requirements/
 
 RUN $MY_PIP install -r foo-package/requirements/base.txt &&\
@@ -63,11 +62,8 @@ ENV MY_BUILD_TARGET cache
 
 # copies it all
 WORKDIR /build
-COPY --chown=myu:myu \
-      foo-package \
-      foo-package
+COPY foo-package foo-package
 
-# WORKDIR /build/foo-package
 RUN $MY_PIP install ./foo-package &&\
     $MY_PIP list
 
@@ -96,24 +92,16 @@ CMD [ "/bin/sh", "docker/boot.sh"]
 #
 FROM build as development
 
-ARG USERID=8004
-ARG GROUPID=8004
-
-# change uid and gid for myu user with that of host
-RUN apk --no-cache add shadow && \
-    usermod -u ${USERID} myu && \
-    groupmod -g ${GROUPID} myu
-
-WORKDIR /home/myu/foo-package
-RUN $MY_PIP install -r requirements/dev.txt
-
-RUN chown -R myu:myu $HOME/.venv
-
-WORKDIR /home/myu
-VOLUME /home/myu/foo-package
-
 ENV MY_BUILD_TARGET development
 ENV MY_BOOT_MODE development
+
+
+# Reuse what was built
+WORKDIR /build
+RUN $MY_PIP install -r foo-package/requirements/dev.txt
+
+WORKDIR /devel
+VOLUME /devel
 
 ENTRYPOINT [ "/bin/sh", "foo-package/docker/entrypoint.sh" ]
 CMD [ "/bin/sh", "foo-package/docker/boot.sh"]

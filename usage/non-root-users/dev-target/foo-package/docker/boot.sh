@@ -1,16 +1,7 @@
 #!/bin/sh
 
-# Runs as SCU user ---------------------------------------------
+# BOOT ---------------------------------------------
 echo "Booting in ${MY_BOOT_MODE} mode ..."
-# echo "Activating python virtual env..."
-# source $HOME/.venv/bin/activate
-
-if [[ ${MY_BOOT_MODE} == "development" ]]
-then 
-    cd $HOME/foo-package
-    $MY_PIP install -e .
-fi
-
 echo "  User    :`id $(whoami)`"
 echo "  Workdir :`pwd`"
 if [[ ${MY_BOOT_MODE} == "development" ]]
@@ -20,6 +11,14 @@ then
     echo "  Environment :" 
     printenv  | sed 's/=/: /' | sed 's/^/    /' | sort
 fi
+
+if [[ ${MY_BOOT_MODE} == "development" ]]
+then     
+    cd /devel/foo-package
+    $MY_PIP install -e .
+fi
+
+
 echo "  Python :" 
 python --version | sed 's/^/    /'
 which python | sed 's/^/    /'
@@ -28,6 +27,6 @@ $MY_PIP list | sed 's/^/    /'
 
 
 
-# RUNNING application -------
+# RUNNING application ----------------------------------------
 echo "Running application ..."
 python -c "import foo; print(foo.__file__)"
