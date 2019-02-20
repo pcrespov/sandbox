@@ -44,10 +44,10 @@ then
     GROUPID=$(stat -c %g $DOCKER_MOUNT)
     GROUPNAME=docker
 
-    addgroup -g $GROUPID $GROUPNAME
+    addgroup -g $GROUPID $GROUPNAME &> /dev/null
+    # if GROUPID already in use, then reuse name
     if [[ $? -gt 0 ]]
     then
-        # if group already exists in container, then reuse name
         GROUPNAME=$(getent group ${GROUPID} | cut -d: -f1)
     fi
     addgroup myu $GROUPNAME
