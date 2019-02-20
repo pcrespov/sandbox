@@ -6,6 +6,7 @@
 	@echo GROUPID=$(shell id -g) >>.env
 	@echo BUILD_DATE=$(shell date -u +"%Y-%m-%dT%H:%M:%SZ") >>.env
 	@echo VCS_REF=$(shell git rev-parse --short HEAD) >>.env
+	@echo FOO=33 >>.env
 	@echo
 	@cat .env
 	@echo

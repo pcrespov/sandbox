@@ -1,6 +1,6 @@
 
 
-## Problem
+## Problems
 
 Good practices on how to build images in order to take maximum advantages of the layer caching mechanism
 
@@ -38,3 +38,30 @@ b) add in the same line a mechanism that check for a change and invalidates cach
 
 
 
+----
+
+Third layer seem to always invalidate layer and avoids cache
+
+```Dockerfile
+FROM python:3.6-alpine as base
+
+LABEL maintainer=pcrespov
+
+RUN adduser -D -u 8004 -s /bin/sh -h /home/scu scu
+RUN apk add --no-cache \
+      su-exec
+```
+
+
+
+``` console
+Building webserver
+Step 1/45 : FROM python:3.6-alpine as base
+ ---> 619349721c5c
+Step 2/45 : LABEL maintainer=pcrespov
+ ---> Using cache
+ ---> f282a9ddd8c4
+Step 3/45 : RUN adduser -D -u 8004 -s /bin/sh -h /home/scu scu
+ ---> Running in 936f8319c3c4
+Removing intermediate container 936f8319c3c4
+```
