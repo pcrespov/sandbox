@@ -13,14 +13,14 @@ echo "Entrypoint for stage ${MY_BUILD_TARGET} ..."
 echo "  User    :`id $(whoami)`"
 echo "  Workdir :`pwd`"
 
+USERNAME=myu
 
 if [[ ${MY_BUILD_TARGET} == "development" ]]
 then
-    # Takes user/group ids of host
-    #
+    # myu takes host's user/group identity except in the case of root,
+    # in which it adds only group
+    
     # NOTE: image files with old id permissions will remain
-    # TODO: rename myu as USER's
-
     # NOTE: expects docker run ... -v $(pwd):/devel/foo-package
     DEVEL_MOUNT=/devel/foo-package
 
@@ -29,10 +29,24 @@ then
 
     USERID=$(stat -c %u $DEVEL_MOUNT)
     GROUPID=$(stat -c %g $DEVEL_MOUNT)
+    GROUPNAME=$(getent group ${GROUPID} | cut -d: -f1)
 
-    deluser myu &> /dev/null
-    addgroup -g $GROUPID myu
-    adduser -u $USERID -G myu -D -s /bin/sh myu
+    if [[ $USERID -eq 0 ]]
+    then
+        addgroup $USERNAME root
+    else
+        # take host's credentials in myu
+        if [[ -z "$GROUPNAME" ]]
+        then
+            GROUPNAME=myu
+            addgroup -g $GROUPID $GROUPNAME
+        else
+            addgroup $USERNAME $GROUPNAME
+        fi
+
+        deluser $USERNAME &> /dev/null
+        adduser -u $USERID -G $GROUPNAME -D -s /bin/sh $USERNAME
+    fi
 fi
 
 
@@ -50,8 +64,8 @@ then
     then
         GROUPNAME=$(getent group ${GROUPID} | cut -d: -f1)
     fi
-    addgroup myu $GROUPNAME
+    addgroup $USERNAME $GROUPNAME
 fi
 
 echo "Starting boot ..."
-su-exec myu "$@"
+su-exec $USERNAME "$@"

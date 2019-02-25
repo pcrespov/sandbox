@@ -20,6 +20,7 @@ buildd: .env
 
 rebuild: .env
 	docker-compose -f docker-compose.yml build --no-cache
+	docker-compose -f docker-compose.yml -f docker-compose.devel.yml build
 
 .PHONY: run rund
 run:

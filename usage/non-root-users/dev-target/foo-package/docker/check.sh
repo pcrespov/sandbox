@@ -15,6 +15,7 @@ GROUP=$(getent group ${GROUPID} | cut -d: -f1)
 
 if [[ -z "$GROUP" ]]
 then
+	# does not exists
 	GROUP=myu
 
 	echo deluser $USER &> /dev/null
