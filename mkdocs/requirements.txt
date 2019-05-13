@@ -5,7 +5,7 @@
 #    pip-compile --output-file=mkdocs/requirements.txt mkdocs/requirements.in
 #
 click==6.7                # via mkdocs
-jinja2==2.10              # via mkdocs
+jinja2==2.10.1
 livereload==2.5.1         # via mkdocs
 markdown==2.6.10          # via mkdocs
 markupsafe==1.0           # via jinja2
