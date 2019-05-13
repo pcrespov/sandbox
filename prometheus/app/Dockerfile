@@ -1,0 +1,17 @@
+FROM python:3-alpine
+ADD . /application
+WORKDIR /application
+
+RUN set -e; \
+    apk add --no-cache --virtual .build-deps \
+    gcc \
+    libc-dev \
+    linux-headers \
+    git \
+    ; \
+    pip install -r src/requirements.txt; \
+    apk del .build-deps;
+
+EXPOSE 8080
+VOLUME /application
+ENTRYPOINT [ "python", "src/app.py" ]
