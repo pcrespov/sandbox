@@ -8,6 +8,14 @@ services:
     volumes:
       - ./config/:/etc/prometheus/
       - prometheus_data:/prometheus-data
+  postgresql-exporter:
+    # https://github.com/wrouesnel/postgres_exporter
+    image: wrouesnel/postgres_exporter
+    ports:
+      - 9187:9187
+    environment:
+      # very insecure client connection
+      - DATA_SOURCE_NAME=postgresql://test:test@postgres:5432/db?sslmode=disable
   grafana:
     image: grafana/grafana
     depends_on:
