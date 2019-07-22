@@ -1,0 +1,21 @@
+
+version: '3.4'
+services:
+  postgres:
+    image: postgres
+    environment:
+      - POSTGRES_USER=test
+      - POSTGRES_PASSWORD=test
+      - POSTGRES_DB=db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+  adminer:
+    image: adminer
+    ports:
+      - "18080:8080"
+    depends_on:
+      - postgres
+volumes:
+  postgres_data: {}
