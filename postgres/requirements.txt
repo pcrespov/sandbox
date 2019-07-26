@@ -2,3 +2,4 @@ git+https://github.com/ITISFoundation/osparc-simcore.git#egg=simcore-postgres-da
 jupyter
 aiopg[sa]
 aiohttp
+faker
