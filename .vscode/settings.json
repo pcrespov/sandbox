@@ -4,5 +4,6 @@
         ".*rc": "ini",
         ".env*": "ini",
         "Dockerfile*": "dockerfile"
-    }
+    },
+    "python.linting.enabled": true
 }

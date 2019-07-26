@@ -1,3 +1,4 @@
 git+https://github.com/ITISFoundation/osparc-simcore.git#egg=simcore-postgres-database&subdirectory=packages/postgres-database
 jupyter
 aiopg[sa]
+aiohttp
