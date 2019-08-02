@@ -1,0 +1,19 @@
+{
+  "name": "demo",
+  "version": "1.0.0",
+  "description": "demo electron",
+  "main": "main.js",
+  "scripts": {
+    "test": "test",
+    "start": "electron ."
+  },
+  "keywords": [
+    "demo",
+    "electron"
+  ],
+  "author": "pcrespov",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^6.0.0"
+  }
+}

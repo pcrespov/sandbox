@@ -30,7 +30,6 @@ def init_tables(cfg):
   finally:
     e.dispose()
 
-
 async def insert_data(conn):
   # TODO: add fakes
   async with conn.begin(): # transction
@@ -95,45 +94,61 @@ async def init_pg(app):
   #await prepare_tables(engine)
   app['db'] = engine
 
-
 async def close_pg(app):
   print("close_pg")
   app['db'].close()
   await app['db'].wait_closed()
   del app['db']
 
-
 async def pg_cleanup_ctx(app):
   await init_pg(app)
   yield
   await close_pg(app)
 
+async def deep_delete_user(uid, conn):
+  with conn.begin():
+    query = user_to_projects.delete().where(user_to_projects.c.user_id == uid)
+    
+    projects.delete().
 
+    query = users.delete().where(users.c.id == uid)
+
+    result = await conn.execute(users_to_projects.select(
+      [user_to_projects.c.project_id]).where(
+      user_to_projects.c.user_id == uid))
+    
+    async for pid in result.fetchall()
+      await conn.execute(project.delete().where(project.c.id=pid))
+
+
+
+
+
+
+
+# Handlers ---------------
 async def hi(request):
   raise web.Response(text="hoi")
 
-
-
 async def insert(app):
   async with app['db'].acquire() as conn:
+    await asyncio.sleep(10)
     await insert_data(conn)
-    await asyncio.sleep(2)
 
 async def populate(request):
   N = request.query.get('num_users', 1)
-  errors = await asyncio.gather(*[insert(request.app) for _ in range(N)], return_exceptions=True)
-  for err in errors:
-    print(err)
+  errors = await asyncio.gather(*[insert(request.app) 
+      for _ in range(N)], return_exceptions=True)
 
   if any(errors):
     msg = " ".joint([e.reason for e in errors if e])
     raise web.HTTPServerError(text=msg)
   raise web.HTTPOk()
 
-
 async def delete_user(request: web.Request):
   uid = request.match_info["id"]
-
+  async with app['db'].acquire() as conn:
+    await deep_delete_user(uid, conn)
 
 def main():
   app = web.Application()
