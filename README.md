@@ -1,9 +1,8 @@
-# dockerfiles
+# sandbox
 
-My curated collection of dockerfiles and some useful samples and tips on how
-to use dockers
+samples, trials, tips ... in insulated environments (containers or virtualenvs)
 
-## Good Practices
+## Good Practices on Dockerfiles
 
 - If a service can run without privileges, use ``USER`` to change to a non-root user [[1]]. All our non-root users will be named ``scu``.
 
